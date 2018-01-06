@@ -1,6 +1,5 @@
 /*eslint-disable no-magic-numbers*/
 import React from "react";
-// import 'whatwg-fetch';
 import {
   VictoryAxis,
   VictoryArea,
