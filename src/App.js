@@ -1,5 +1,6 @@
 /*eslint-disable no-magic-numbers*/
 import React from "react";
+// import 'whatwg-fetch';
 import {
   VictoryAxis,
   VictoryArea,
@@ -17,9 +18,26 @@ import {
 
 export default class App extends React.Component {
 
+
+  loadThingsFromServer()  {
+      var xhr = new XMLHttpRequest();
+      xhr.overrideMimeType("application/json");
+      xhr.open('get', 'S89843.json', true);
+      xhr.onload = function()  {
+      	console.log(xhr)
+        var data = JSON.parse(xhr.responseText);
+        this.setState( { data: data } );
+      } .bind(this);
+      xhr.send();
+  }
+
   constructor() {
     super();
-    this.state = {};
+    this.state = {data: []};
+  }
+
+  componentDidMount()  {
+      this.loadThingsFromServer();
   }
 
   handleZoom(domain) {
@@ -30,10 +48,12 @@ export default class App extends React.Component {
     this.setState({zoomDomain: domain});
   }
 
+  
   render() {
     const style = {
       parent: { border: "1px solid #ccc", margin: "2%", maxWidth: "100%", height: "100%", width: "100%" }
     };
+    console.log(this.state.data)
     return (
       <div className="demo">
           <VictoryChart width={window.innerWidth} height={window.innerHeight - 100} scale={{x: "time"}}
