@@ -18,49 +18,48 @@ import {
 export default class App extends React.Component {
 
 
-	loadThingsFromServer()  {
-			var xhr = new XMLHttpRequest();
-			xhr.overrideMimeType("application/json");
-			xhr.open('get', 'S89843.json', true);
-			xhr.onload = function()  {
-				console.log(xhr)
-				var data = JSON.parse(xhr.responseText);
-				var pointStart = data.pointStart*10;
-				var positive = [],
-						negative = [],
-						neutral = [],
-						pointPositive = pointStart,
-						pointNegative = pointStart,
-						pointNeutral = pointStart;
-				console.log( pointStart)
-				console.log(new Date(1982, 1, 1))
-				data.chart.positive.forEach(function(item){
-					var point = new Date(pointPositive);
-					positive.push({'x': point,'y': item});
-					pointPositive = pointPositive + 3600 * 1000 * 24;
-				});	
-				data.chart.negative.forEach(function(item){
-					var point = new Date(pointNegative);
-					negative.push({'x': point,'y': item});
-					pointNegative = pointNegative + 3600 * 1000 * 24;
-				});
-				data.chart.neutral.forEach(function(item){
-					var point = new Date(pointNeutral);
-					neutral.push({'x': point,'y': item});
-					pointNeutral = pointNeutral + 3600 * 1000 * 24;
-				});
-				this.setState( { positive: positive, negative: negative, neutral: neutral} );
-			} .bind(this);
-			xhr.send();
+	loadThingsFromServer() {
+		var xhr = new XMLHttpRequest();
+		xhr.overrideMimeType("application/json");
+		xhr.open('get', 'S89843.json', true);
+		xhr.onload = function() {
+			console.log(xhr)
+			var data = JSON.parse(xhr.responseText);
+			var pointStart = data.pointStart*10;
+			var positive = [],
+				negative = [],
+				neutral = [],
+				pointPositive = pointStart,
+				pointNegative = pointStart,
+				pointNeutral = pointStart;
+			data.chart.positive.forEach(function(value){
+				var point = new Date(pointPositive);
+				positive.push({'x': point,'y': value});
+				pointPositive = pointPositive + 86400000;
+			});	
+			data.chart.negative.forEach(function(value){
+				var point = new Date(pointNegative);
+				negative.push({'x': point,'y': value});
+				pointNegative = pointNegative + 86400000;
+			});
+			data.chart.neutral.forEach(function(value){
+				var point = new Date(pointNeutral);
+				neutral.push({'x': point,'y': value});
+				pointNeutral = pointNeutral + 86400000;
+			});
+			this.setState( { positive: positive, negative: negative, neutral: neutral} );
+		} .bind(this);
+		xhr.send();
 	}
 
 	constructor() {
 		super();
 		this.state = {positive: [], negative: [], neutral: [], tickValues: []};
+		this.loadThingsFromServer();
 	}
 
-	componentDidMount()  {
-			this.loadThingsFromServer();
+	componentWillMount() {
+		
 	}
 
 	handleZoom(domain) {
@@ -120,9 +119,7 @@ export default class App extends React.Component {
 							/>
 						}
 					>
-						
-						<VictoryAxis
-			      />
+						<VictoryAxis/>
 						<VictoryStack>
 							<VictoryArea
 								style={{
